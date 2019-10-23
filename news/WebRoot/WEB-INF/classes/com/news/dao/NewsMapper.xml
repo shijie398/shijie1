@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.news.dao.NewsMapper">
+	<!-- 新闻分类查询 -->
+	<select id="findNews"  resultType="Newsb">
+  		select * from news_category
+	</select>
+	
+	<!-- 更改查询新闻信息 -->
+	<select id="findli"  resultType="Newsa" parameterType="int">
+  		select * from news_detail where id=#{id} 
+	</select>
+	
+	<!-- 查询新闻信息 -->
+	<select id="findNewslist"  resultType="Newsa">
+  		select * from news_detail
+  		<where>
+            <if test="categoryId>0"> 
+             	and categoryId =#{categoryId}
+            </if>
+            <if test="title!=null"> 
+                and title like CONCAT('%',#{title},'%')
+            </if>
+                order by categoryId desc
+            </where>
+	</select>
+	
+	<!-- 更改新闻信息 -->
+	<update id="updNews" parameterType="Newsa">
+		update news_detail set categoryId=#{categoryId},title=#{title},summary=#{summary}
+		,author=#{author} where id=#{id}
+	</update>
+	<!-- 删除新闻信息 -->
+	<delete id="delNews" parameterType="int">
+		delete from news_detail where id=#{id}
+	</delete>
+	<!-- 添加航班信息 -->
+	<insert id="addNews" parameterType="Newsa">
+	insert into news_detail(categoryId,title,summary,author,createDate)
+ 	values(#{categoryId},#{title},#{summary},#{author},#{createDate})
+	</insert>
+	
+	<!-- 标题是否重复 -->
+	<select id="findid"  resultType="int" parameterType="String">
+  		select count(1) from news_detail where title=#{title}
+	</select>
+</mapper>
